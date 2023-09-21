@@ -1,0 +1,111 @@
+swagger: "2.0"
+info:
+  title: BB backend core
+  description: BB backend
+  version: 0.0.1
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+  - https
+basePath: /api
+host: "localhost:8080"
+
+# Responses
+responses:
+  unauthorized:
+    description: Unauthorized
+    schema:
+      $ref: "swagger/responses/error.v1.yaml"
+  invalid-request:
+    description: Invalid request
+    schema:
+      $ref: "swagger/responses/error.v1.yaml"
+  forbidden:
+    description: Insufficient privilege to execute action.
+    schema:
+      $ref: "swagger/responses/error.v1.yaml"
+  not-found:
+    description: Not found.
+    schema:
+      $ref: "swagger/responses/error.v1.yaml"
+  server-error:
+    description: Internal Server Error
+    schema:
+      $ref: "swagger/responses/error.v1.yaml"
+
+# Paths
+paths:
+  /url:
+    put:
+      tags:
+        - Url
+      summary: long url for shorting
+      security: []
+      operationId: putLongUrl
+      responses:
+        302:
+          description: OK
+          schema:
+            type: object
+            properties:
+              shortUrl:
+                type: string
+        503:
+          description: Returned if the service is detected as unhealthy
+          schema:
+            type: object
+            additionalProperties: true
+        404:
+          $ref: "#/responses/not-found"
+  /:short-url:
+    get:
+      tags:
+        - Url
+      summary: return long url
+      security: []
+      operationId: getLongUrl
+      responses:
+        301:
+          description: OK
+          headers:
+            Location:
+              type: string
+              format: url
+          # schema:
+          #   type: object
+          #   properties: 
+          #     location: 
+          #       type: string
+        503:
+          description: Returned if the service is detected as unhealthy
+          schema:
+            type: object
+            additionalProperties: true
+        404:
+          $ref: "#/responses/not-found" 
+  /analytics/:short-url:
+    get:
+      tags:
+        - Url
+      summary: return count of redirects from short url to long url
+      security: []
+      operationId: getAnalytics
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties: 
+              redirects: 
+                type: number
+        503:
+          description: Returned if the service is detected as unhealthy
+          schema:
+            type: object
+            additionalProperties: true
+        404:
+          $ref: "#/responses/not-found"
+      

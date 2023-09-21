@@ -1,0 +1,8 @@
+title: Error Response
+description: Standard error format
+type: object
+properties:
+  code:
+    type: string
+  message:
+    type: string
