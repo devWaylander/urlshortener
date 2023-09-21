@@ -1,4 +1,7 @@
+.vscode
 .env
-bbDB.session.sql
+shortenerDB.session.sql
 Makefile
 docker-compose.yaml
+db/
+urlshortener

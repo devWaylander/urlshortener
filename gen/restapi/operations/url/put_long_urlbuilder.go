@@ -11,15 +11,15 @@ import (
 	golangswaggerpaths "path"
 )
 
-// GetLongURLURL generates an URL for the get long Url operation
-type GetLongURLURL struct {
+// PutLongURL generates an URL for the put long operation
+type PutLongURL struct {
 	_basePath string
 }
 
 // WithBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *GetLongURLURL) WithBasePath(bp string) *GetLongURLURL {
+func (o *PutLongURL) WithBasePath(bp string) *PutLongURL {
 	o.SetBasePath(bp)
 	return o
 }
@@ -27,15 +27,15 @@ func (o *GetLongURLURL) WithBasePath(bp string) *GetLongURLURL {
 // SetBasePath sets the base path for this url builder, only required when it's different from the
 // base path specified in the swagger spec.
 // When the value of the base path is an empty string
-func (o *GetLongURLURL) SetBasePath(bp string) {
+func (o *PutLongURL) SetBasePath(bp string) {
 	o._basePath = bp
 }
 
 // Build a url path and query string
-func (o *GetLongURLURL) Build() (*url.URL, error) {
+func (o *PutLongURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/:short-url"
+	var _path = "/url"
 
 	_basePath := o._basePath
 	if _basePath == "" {
@@ -47,7 +47,7 @@ func (o *GetLongURLURL) Build() (*url.URL, error) {
 }
 
 // Must is a helper function to panic when the url builder returns an error
-func (o *GetLongURLURL) Must(u *url.URL, err error) *url.URL {
+func (o *PutLongURL) Must(u *url.URL, err error) *url.URL {
 	if err != nil {
 		panic(err)
 	}
@@ -58,17 +58,17 @@ func (o *GetLongURLURL) Must(u *url.URL, err error) *url.URL {
 }
 
 // String returns the string representation of the path with query string
-func (o *GetLongURLURL) String() string {
+func (o *PutLongURL) String() string {
 	return o.Must(o.Build()).String()
 }
 
 // BuildFull builds a full url with scheme, host, path and query string
-func (o *GetLongURLURL) BuildFull(scheme, host string) (*url.URL, error) {
+func (o *PutLongURL) BuildFull(scheme, host string) (*url.URL, error) {
 	if scheme == "" {
-		return nil, errors.New("scheme is required for a full url on GetLongURLURL")
+		return nil, errors.New("scheme is required for a full url on PutLongURL")
 	}
 	if host == "" {
-		return nil, errors.New("host is required for a full url on GetLongURLURL")
+		return nil, errors.New("host is required for a full url on PutLongURL")
 	}
 
 	base, err := o.Build()
@@ -82,6 +82,6 @@ func (o *GetLongURLURL) BuildFull(scheme, host string) (*url.URL, error) {
 }
 
 // StringFull returns the string representation of a complete url
-func (o *GetLongURLURL) StringFull(scheme, host string) string {
+func (o *PutLongURL) StringFull(scheme, host string) string {
 	return o.Must(o.BuildFull(scheme, host)).String()
 }

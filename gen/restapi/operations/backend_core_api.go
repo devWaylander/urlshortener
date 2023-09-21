@@ -47,11 +47,11 @@ func NewBackendCoreAPI(spec *loads.Document) *BackendCoreAPI {
 		URLGetAnalyticsHandler: url.GetAnalyticsHandlerFunc(func(params url.GetAnalyticsParams) middleware.Responder {
 			return middleware.NotImplemented("operation url.GetAnalytics has not yet been implemented")
 		}),
-		URLGetLongURLHandler: url.GetLongURLHandlerFunc(func(params url.GetLongURLParams) middleware.Responder {
-			return middleware.NotImplemented("operation url.GetLongURL has not yet been implemented")
+		URLGetLongHandler: url.GetLongHandlerFunc(func(params url.GetLongParams) middleware.Responder {
+			return middleware.NotImplemented("operation url.GetLong has not yet been implemented")
 		}),
-		URLPutLongURLHandler: url.PutLongURLHandlerFunc(func(params url.PutLongURLParams) middleware.Responder {
-			return middleware.NotImplemented("operation url.PutLongURL has not yet been implemented")
+		URLPutLongHandler: url.PutLongHandlerFunc(func(params url.PutLongParams) middleware.Responder {
+			return middleware.NotImplemented("operation url.PutLong has not yet been implemented")
 		}),
 	}
 }
@@ -91,10 +91,10 @@ type BackendCoreAPI struct {
 
 	// URLGetAnalyticsHandler sets the operation handler for the get analytics operation
 	URLGetAnalyticsHandler url.GetAnalyticsHandler
-	// URLGetLongURLHandler sets the operation handler for the get long Url operation
-	URLGetLongURLHandler url.GetLongURLHandler
-	// URLPutLongURLHandler sets the operation handler for the put long Url operation
-	URLPutLongURLHandler url.PutLongURLHandler
+	// URLGetLongHandler sets the operation handler for the get long operation
+	URLGetLongHandler url.GetLongHandler
+	// URLPutLongHandler sets the operation handler for the put long operation
+	URLPutLongHandler url.PutLongHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -175,11 +175,11 @@ func (o *BackendCoreAPI) Validate() error {
 	if o.URLGetAnalyticsHandler == nil {
 		unregistered = append(unregistered, "url.GetAnalyticsHandler")
 	}
-	if o.URLGetLongURLHandler == nil {
-		unregistered = append(unregistered, "url.GetLongURLHandler")
+	if o.URLGetLongHandler == nil {
+		unregistered = append(unregistered, "url.GetLongHandler")
 	}
-	if o.URLPutLongURLHandler == nil {
-		unregistered = append(unregistered, "url.PutLongURLHandler")
+	if o.URLPutLongHandler == nil {
+		unregistered = append(unregistered, "url.PutLongHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -276,11 +276,11 @@ func (o *BackendCoreAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/:short-url"] = url.NewGetLongURL(o.context, o.URLGetLongURLHandler)
+	o.handlers["GET"]["/:short-url"] = url.NewGetLong(o.context, o.URLGetLongHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
-	o.handlers["PUT"]["/url"] = url.NewPutLongURL(o.context, o.URLPutLongURLHandler)
+	o.handlers["PUT"]["/url"] = url.NewPutLong(o.context, o.URLPutLongHandler)
 }
 
 // Serve creates a http handler to serve the API over HTTP

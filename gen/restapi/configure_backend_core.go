@@ -43,14 +43,14 @@ func configureAPI(api *operations.BackendCoreAPI) http.Handler {
 			return middleware.NotImplemented("operation url.GetAnalytics has not yet been implemented")
 		})
 	}
-	if api.URLGetLongURLHandler == nil {
-		api.URLGetLongURLHandler = url.GetLongURLHandlerFunc(func(params url.GetLongURLParams) middleware.Responder {
-			return middleware.NotImplemented("operation url.GetLongURL has not yet been implemented")
+	if api.URLGetLongHandler == nil {
+		api.URLGetLongHandler = url.GetLongHandlerFunc(func(params url.GetLongParams) middleware.Responder {
+			return middleware.NotImplemented("operation url.GetLong has not yet been implemented")
 		})
 	}
-	if api.URLPutLongURLHandler == nil {
-		api.URLPutLongURLHandler = url.PutLongURLHandlerFunc(func(params url.PutLongURLParams) middleware.Responder {
-			return middleware.NotImplemented("operation url.PutLongURL has not yet been implemented")
+	if api.URLPutLongHandler == nil {
+		api.URLPutLongHandler = url.PutLongHandlerFunc(func(params url.PutLongParams) middleware.Responder {
+			return middleware.NotImplemented("operation url.PutLong has not yet been implemented")
 		})
 	}
 

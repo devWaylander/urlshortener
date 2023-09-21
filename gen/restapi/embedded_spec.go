@@ -44,7 +44,7 @@ func init() {
           "Url"
         ],
         "summary": "return long url",
-        "operationId": "getLongUrl",
+        "operationId": "getLong",
         "responses": {
           "301": {
             "description": "OK",
@@ -108,17 +108,26 @@ func init() {
           "Url"
         ],
         "summary": "long url for shorting",
-        "operationId": "putLongUrl",
-        "responses": {
-          "302": {
-            "description": "OK",
+        "operationId": "putLong",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "shortUrl": {
+                "longUrl": {
                   "type": "string"
                 }
               }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
             }
           },
           "404": {
@@ -195,7 +204,7 @@ func init() {
           "Url"
         ],
         "summary": "return long url",
-        "operationId": "getLongUrl",
+        "operationId": "getLong",
         "responses": {
           "301": {
             "description": "OK",
@@ -265,17 +274,26 @@ func init() {
           "Url"
         ],
         "summary": "long url for shorting",
-        "operationId": "putLongUrl",
-        "responses": {
-          "302": {
-            "description": "OK",
+        "operationId": "putLong",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
             "schema": {
               "type": "object",
               "properties": {
-                "shortUrl": {
+                "longUrl": {
                   "type": "string"
                 }
               }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
             }
           },
           "404": {
