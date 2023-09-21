@@ -2,17 +2,19 @@ package shortener
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"fmt"
+	"math/rand"
+	"time"
 
 	"github.com/devWhisper/urlshortener/internal/shortener/model"
 	"github.com/go-openapi/strfmt"
+	"golang.org/x/exp/slices"
 )
 
 type Repo interface {
-	PutLongUrlAndToken(ctx context.Context, longURL string, shortURL string, isActive bool, expiresAt strfmt.DateTime) (error, bool)
+	PutLongUrlAndToken(ctx context.Context, longURL string, shortURL string, isActive bool, expiresAt strfmt.DateTime) error
 	GetCheckExistLongUrl(ctx context.Context, longURL string) (*model.ShortUrl, error)
+	GetCheckExistTokens(ctx context.Context) ([]string, error)
 	GetShortedUrlByToken(ctx context.Context, token string) (*model.ShortUrl, error)
 	UpdateActiveShortedUrlStatus(ctx context.Context, token string, isActive bool) error
 }
@@ -27,27 +29,38 @@ func NewService(repo Repo) *service {
 	}
 }
 
-func (s *service) PutLongURL(ctx context.Context, longURL string) (shortURL string, err error) {
-	// взять
-	// сгенерить токен
-	// положить длинный урл и токен в бд
-	// вернуть токен хендлеру
-	checkExistToken, err := s.repo.GetCheckExistLongUrl(ctx, longURL)
-	if err != nil {
-		return "", err
+func generateToken(n int) string {
+	var letters = []rune("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	token := make([]rune, n)
+
+	for i := range token {
+		token[i] = letters[rand.Intn(len(letters))]
 	}
+
+	return string(token)
+}
+
+func (s *service) PutLongURL(ctx context.Context, longURL string) (shortURL string, err error) {
+	checkExistToken, _ := s.repo.GetCheckExistLongUrl(ctx, longURL)
 	if checkExistToken != nil {
 		return checkExistToken.Token, nil
 	}
 
-	b := make([]byte, 1)
-	if _, err := rand.Read(b); err != nil {
+	// TODO: подумать
+	tokens, _ := s.repo.GetCheckExistTokens(ctx)
+	token := generateToken(15)
+
+	for slices.Contains(tokens, token) {
+		token = generateToken(15)
+	}
+
+	expiresAt := strfmt.DateTime(time.Now().AddDate(0, 0, 7))
+	err = s.repo.PutLongUrlAndToken(ctx, longURL, token, true, expiresAt)
+	if err != nil {
 		return "", err
 	}
-	c := hex.EncodeToString(b)
-	fmt.Println(c)
 
-	return
+	return token, nil
 }
 
 func (s *service) GetRedirectToLongURL(ctx context.Context, shortURL string) error {

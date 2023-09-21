@@ -16,19 +16,11 @@ func NewRepo(db *sqlx.DB) *repo {
 	return &repo{db: db}
 }
 
-func (r *repo) PutLongUrlAndToken(ctx context.Context, longURL string, shortURL string, isActive bool, expiresAt strfmt.DateTime) (error, bool) {
-	urlModel := model.ShortUrl{}
-
-	checkQuery := `SELECT token FROM shorted_urls WHERE token = $1`
-	existStatus := r.db.GetContext(ctx, &urlModel, checkQuery, shortURL)
-	if urlModel.Token != "" {
-		return existStatus, true
-	}
-
+func (r *repo) PutLongUrlAndToken(ctx context.Context, longURL string, shortURL string, isActive bool, expiresAt strfmt.DateTime) error {
 	query := `INSERT INTO shorted_urls (long_url, token, is_active, expires_at) VALUES ($1, $2, $3, $4)`
 	_, err := r.db.ExecContext(ctx, query, longURL, shortURL, isActive, expiresAt)
 
-	return err, false
+	return err
 }
 
 func (r *repo) GetShortedUrlByToken(ctx context.Context, token string) (*model.ShortUrl, error) {
@@ -43,19 +35,28 @@ func (r *repo) GetShortedUrlByToken(ctx context.Context, token string) (*model.S
 	return &urlModel, nil
 }
 
+func (r *repo) GetCheckExistTokens(ctx context.Context) ([]string, error) {
+	tokens := []string{}
+
+	query := `SELECT token FROM shorted_urls`
+	err := r.db.SelectContext(ctx, &tokens, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return tokens, nil
+}
+
 func (r *repo) GetCheckExistLongUrl(ctx context.Context, longURL string) (*model.ShortUrl, error) {
 	urlModel := model.ShortUrl{}
 	query := `SELECT * FROM shorted_urls WHERE long_url = $1`
 
-	err := r.db.GetContext(ctx, &urlModel, query, longURL)
-	if err != nil {
-		return nil, err
-	}
+	existStatus := r.db.GetContext(ctx, &urlModel, query, longURL)
 	if urlModel.LongUrl == longURL {
-		return nil, nil
+		return &urlModel, existStatus
 	}
 
-	return &urlModel, nil
+	return nil, nil
 }
 
 func (r *repo) UpdateActiveShortedUrlStatus(ctx context.Context, token string, isActive bool) error {

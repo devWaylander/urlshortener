@@ -31,6 +31,7 @@ require (
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/rs/cors v1.10.0
 	go.mongodb.org/mongo-driver v1.11.3 // indirect
+	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
 	golang.org/x/sys v0.12.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
