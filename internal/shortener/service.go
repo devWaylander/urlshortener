@@ -41,6 +41,7 @@ func generateToken(n int) string {
 }
 
 func (s *service) PutLongURL(ctx context.Context, longURL string) (shortURL string, err error) {
+	fmt.Println(time.Now())
 	checkExistToken, _ := s.repo.GetCheckExistLongUrl(ctx, longURL)
 	if checkExistToken != nil {
 		return checkExistToken.Token, nil
@@ -63,10 +64,23 @@ func (s *service) PutLongURL(ctx context.Context, longURL string) (shortURL stri
 	return token, nil
 }
 
-func (s *service) GetRedirectToLongURL(ctx context.Context, shortURL string) error {
-	fmt.Println("")
+func (s *service) GetRedirectToLongURL(ctx context.Context, token string) (longUrl string, err error) {
+	shortedUrlEntity, err := s.repo.GetShortedUrlByToken(ctx, token)
+	if err != nil {
+		return "", err
+	}
 
-	return nil
+	// 2023-09-21 17:49:01.539965687 +0600 +06 m=+6.533125258
+	// "expires_at": "2023-09-28 11:04:44.24+00",
+
+	// fmt.Println(time.Parse("2000-01-01 00:00:00.00", shortedUrlEntity.ExpiresAt.String()))
+	// fmt.Println(time.Parse(shortedUrlEntity.ExpiresAt.String())
+
+	// expiredAt := shortedUrlEntity.ExpiresAt
+	// time.Now().Compare()
+	// fmt.Println("")
+
+	return shortedUrlEntity.LongUrl, nil
 }
 
 func (s *service) GetRedirectionAnalytics(ctx context.Context, shortURL string) error {

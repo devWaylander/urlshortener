@@ -9,11 +9,16 @@ import (
 	"errors"
 	"net/url"
 	golangswaggerpaths "path"
+	"strings"
 )
 
 // GetLongURL generates an URL for the get long operation
 type GetLongURL struct {
+	Token string
+
 	_basePath string
+	// avoid unkeyed usage
+	_ struct{}
 }
 
 // WithBasePath sets the base path for this url builder, only required when it's different from the
@@ -35,7 +40,14 @@ func (o *GetLongURL) SetBasePath(bp string) {
 func (o *GetLongURL) Build() (*url.URL, error) {
 	var _result url.URL
 
-	var _path = "/:short-url"
+	var _path = "/short-url/{token}"
+
+	token := o.Token
+	if token != "" {
+		_path = strings.Replace(_path, "{token}", token, -1)
+	} else {
+		return nil, errors.New("token is required on GetLongURL")
+	}
 
 	_basePath := o._basePath
 	if _basePath == "" {

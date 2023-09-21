@@ -37,37 +37,6 @@ func init() {
   "host": "localhost:8080",
   "basePath": "/api",
   "paths": {
-    "/:short-url": {
-      "get": {
-        "security": [],
-        "tags": [
-          "Url"
-        ],
-        "summary": "return long url",
-        "operationId": "getLong",
-        "responses": {
-          "301": {
-            "description": "OK",
-            "headers": {
-              "Location": {
-                "type": "string",
-                "format": "url"
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/responses/not-found"
-          },
-          "503": {
-            "description": "Returned if the service is detected as unhealthy",
-            "schema": {
-              "type": "object",
-              "additionalProperties": true
-            }
-          }
-        }
-      }
-    },
     "/analytics/:short-url": {
       "get": {
         "security": [],
@@ -85,6 +54,45 @@ func init() {
                 "redirects": {
                   "type": "number"
                 }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/responses/not-found"
+          },
+          "503": {
+            "description": "Returned if the service is detected as unhealthy",
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "/short-url/{token}": {
+      "get": {
+        "security": [],
+        "tags": [
+          "Url"
+        ],
+        "summary": "return long url",
+        "operationId": "getLong",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "301": {
+            "description": "OK",
+            "headers": {
+              "Location": {
+                "type": "string",
+                "format": "url"
               }
             }
           },
@@ -197,21 +205,23 @@ func init() {
   "host": "localhost:8080",
   "basePath": "/api",
   "paths": {
-    "/:short-url": {
+    "/analytics/:short-url": {
       "get": {
         "security": [],
         "tags": [
           "Url"
         ],
-        "summary": "return long url",
-        "operationId": "getLong",
+        "summary": "return count of redirects from short url to long url",
+        "operationId": "getAnalytics",
         "responses": {
-          "301": {
+          "200": {
             "description": "OK",
-            "headers": {
-              "Location": {
-                "type": "string",
-                "format": "url"
+            "schema": {
+              "type": "object",
+              "properties": {
+                "redirects": {
+                  "type": "number"
+                }
               }
             }
           },
@@ -231,23 +241,29 @@ func init() {
         }
       }
     },
-    "/analytics/:short-url": {
+    "/short-url/{token}": {
       "get": {
         "security": [],
         "tags": [
           "Url"
         ],
-        "summary": "return count of redirects from short url to long url",
-        "operationId": "getAnalytics",
+        "summary": "return long url",
+        "operationId": "getLong",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "token",
+            "in": "path",
+            "required": true
+          }
+        ],
         "responses": {
-          "200": {
+          "301": {
             "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "redirects": {
-                  "type": "number"
-                }
+            "headers": {
+              "Location": {
+                "type": "string",
+                "format": "url"
               }
             }
           },

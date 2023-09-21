@@ -30,7 +30,7 @@ func NewGetLong(ctx *middleware.Context, handler GetLongHandler) *GetLong {
 }
 
 /*
-	GetLong swagger:route GET /:short-url Url getLong
+	GetLong swagger:route GET /short-url/{token} Url getLong
 
 return long url
 */

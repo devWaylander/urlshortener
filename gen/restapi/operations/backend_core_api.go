@@ -276,7 +276,7 @@ func (o *BackendCoreAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/:short-url"] = url.NewGetLong(o.context, o.URLGetLongHandler)
+	o.handlers["GET"]["/short-url/{token}"] = url.NewGetLong(o.context, o.URLGetLongHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}

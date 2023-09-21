@@ -12,7 +12,7 @@ import (
 
 type UrlShortenerService interface {
 	PutLongURL(ctx context.Context, longURL string) (shortURL string, err error)
-	GetRedirectToLongURL(ctx context.Context, shortURL string) error
+	GetRedirectToLongURL(ctx context.Context, shortURL string) (longURL string, err error)
 	GetRedirectionAnalytics(ctx context.Context, shortURL string) error
 }
 
@@ -31,9 +31,15 @@ func Configure(api *operations.BackendCoreAPI, service UrlShortenerService) {
 		return url.NewPutLongOK().WithPayload(token)
 	})
 
-	// api.URLGetLongHandler = url.GetLongHandlerFunc(func(params url.GetLongParams) middleware.Responder {
+	api.URLGetLongHandler = url.GetLongHandlerFunc(func(params url.GetLongParams) middleware.Responder {
+		if params.Token == "" {
+			return url.NewGetLongNotFound().WithPayload(&models.ErrorV1{Message: "Emprty req. short URL must be provided"})
+		}
 
-	// })
+		redirectToUrl, _ := service.GetRedirectToLongURL(params.HTTPRequest.Context(), params.Token)
+
+		return url.NewGetLongMovedPermanently().WithLocation(redirectToUrl)
+	})
 
 	// api.URLGetAnalyticsHandler = url.GetAnalyticsHandlerFunc(func(params url.GetAnalyticsParams) middleware.Responder {
 

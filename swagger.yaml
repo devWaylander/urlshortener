@@ -65,13 +65,18 @@ paths:
             additionalProperties: true
         404:
           $ref: "#/responses/not-found"
-  /:short-url:
+  /short-url/{token}:
     get:
       tags:
         - Url
       summary: return long url
       security: []
       operationId: getLong
+      parameters:
+        - name: token
+          type: string
+          required: true
+          in: path
       responses:
         301:
           description: OK
